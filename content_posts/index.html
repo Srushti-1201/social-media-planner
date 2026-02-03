@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Planner</title>
+</head>
+<body>
+    <h1>Content Planner is running 🚀</h1>
+
+    {% if user.is_authenticated %}
+      <p>Logged in as: <strong>{{ user.username }}</strong></p>
+      {% if user.is_superuser %}
+        <p>👑 Superuser</p>
+      {% endif %}
+    {% else %}
+      <p>Not logged in</p>
+    {% endif %}
+</body>
+</html>

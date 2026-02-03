@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+</head>
+<body>
+    <h1>Content Planner is running 🚀</h1>
+
+    <h2>All Posts</h2>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <strong>{{ post.title }}</strong> 
+                ({{ post.get_platform_display }}) - 
+                {{ post.get_status_display }}
+                {% if post.scheduled_date %}
+                    on {{ post.scheduled_date }}
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No posts yet.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    
+    <!-- 4. Frontend consume this API -->
+    <div style="background: #f4f4f4; padding: 20px; border-radius: 8px;">
+        <h3>⚡ Quick Create (via API)</h3>
+        <form id="apiPostForm">
+            {% csrf_token %}
+            <input type="text" id="apiTitle" placeholder="Post Title" required style="padding: 5px;">
+            <select id="apiPlatform" style="padding: 5px;">
+                <option value="instagram">Instagram</option>
+                <option value="twitter">Twitter</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="facebook">Facebook</option>
+            </select>
+            <button type="submit" style="padding: 5px 15px; background: #007bff; color: white; border: none; cursor: pointer;">
+                Post via API
+            </button>
+        </form>
+        <p id="apiStatus" style="margin-top: 10px; font-size: 0.9em;"></p>
+    </div>
+
+    <script>
+        document.getElementById('apiPostForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const statusMsg = document.getElementById('apiStatus');
+            statusMsg.textContent = "Sending...";
+
+            const data = {
+                title: document.getElementById('apiTitle').value,
+                platform: document.getElementById('apiPlatform').value,
+                content: "Created via Dashboard API", // Default content for quick add
+                status: "draft"
+            };
+
+            try {
+                const response = await fetch('/api/posts/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    statusMsg.textContent = "✅ Success! Refreshing...";
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    const err = await response.json();
+                    statusMsg.textContent = "❌ Error: " + JSON.stringify(err);
+                }
+            } catch (error) {
+                statusMsg.textContent = "❌ Network Error";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

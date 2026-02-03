@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+</head>
+<body>
+    <h1>Content Planner is running 🚀</h1>
+
+    <!-- 2. Data Visualization / Reporting -->
+    <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <h2>📊 Analytics Dashboard</h2>
+        <p><strong>Total Posts:</strong> {{ total_posts }}</p>
+        
+        <div style="display: flex; gap: 20px;">
+            <div>
+                <h4>By Status:</h4>
+                <ul>
+                {% for stat in status_stats %}
+                    <li>{{ stat.status|title }}: {{ stat.count }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h4>By Platform:</h4>
+                <ul>
+                {% for stat in platform_stats %}
+                    <li>{{ stat.platform|title }}: {{ stat.count }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h2>Published Posts</h2>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <strong>
+                    <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
+                </strong> 
+                ({{ post.get_platform_display }}) - 
+                {% if post.status == "published" %}
+                  ✅ Published
+                {% elif post.status == "scheduled" %}
+                  ⏰ Scheduled
+                {% else %}
+                  📝 Draft
+                {% endif %}
+                {% if post.scheduled_date %}
+                    on {{ post.scheduled_date }}
+                {% endif %}
+                <!-- 1. Full CRUD (Delete) -->
+                <button onclick="deletePost({{ post.id }})" style="color: red; margin-left: 10px; cursor: pointer;">Delete</button>
+            </li>
+        {% empty %}
+            <li>No posts yet.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    
+    <!-- 4. Frontend consume this API -->
+    <div style="background: #f4f4f4; padding: 20px; border-radius: 8px;">
+        <h3>⚡ Quick Create (via API)</h3>
+        <form id="apiPostForm">
+            {% csrf_token %}
+            <input type="text" id="apiTitle" placeholder="Post Title" required style="padding: 5px;">
+            <select id="apiPlatform" style="padding: 5px;">
+                <option value="instagram">Instagram</option>
+                <option value="twitter">Twitter</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="facebook">Facebook</option>
+            </select>
+            
+            <!-- 3. Third-Party API Integration -->
+            <button type="button" id="fetchImageBtn" style="padding: 5px; background: #6c757d; color: white; border: none; cursor: pointer;">📸 Add Unsplash Image</button>
+            
+            <button type="submit" style="padding: 5px 15px; background: #007bff; color: white; border: none; cursor: pointer;">
+                Post via API
+            </button>
+        </form>
+        <p id="apiStatus" style="margin-top: 10px; font-size: 0.9em;"></p>
+    </div>
+
+    <script>
+        let generatedContent = "Created via Dashboard API";
+
+        document.getElementById('apiPostForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const statusMsg = document.getElementById('apiStatus');
+            statusMsg.textContent = "Sending...";
+
+            const data = {
+                title: document.getElementById('apiTitle').value,
+                platform: document.getElementById('apiPlatform').value,
+                content: generatedContent,
+                status: "draft"
+            };
+
+            try {
+                const response = await fetch('/api/posts/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    statusMsg.textContent = "✅ Success! Refreshing...";
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    const err = await response.json();
+                    statusMsg.textContent = "❌ Error: " + JSON.stringify(err);
+                }
+            } catch (error) {
+                statusMsg.textContent = "❌ Network Error";
+                console.error(error);
+            }
+        });
+
+        // Delete Logic
+        async function deletePost(id) {
+            if(!confirm("Are you sure you want to delete this post?")) return;
+            
+            try {
+                const response = await fetch(`/api/posts/${id}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert("Failed to delete");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Unsplash API Logic
+        document.getElementById('fetchImageBtn').addEventListener('click', async () => {
+            const statusMsg = document.getElementById('apiStatus');
+            statusMsg.textContent = "Fetching image...";
+            try {
+                const res = await fetch('/api/posts/fetch_image/?query=business');
+                const data = await res.json();
+                if (data.url) {
+                    generatedContent += `\n\n!Image`;
+                    statusMsg.textContent = "📸 Image added to content!";
+                }
+            } catch (e) {
+                statusMsg.textContent = "❌ Failed to fetch image (Check API Key)";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+- [x] Remove scheduled_time TextField from PostForm.jsx
+- [x] Remove scheduled_time input from post_list.html and update JavaScript data
+- [x] Remove scheduled_time input from post_edit.html and update JavaScript data
+- [x] Test create, edit, delete operations to ensure no errors
+- [x] Verify dashboard updates correctly

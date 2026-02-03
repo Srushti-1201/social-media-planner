@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+        <a href="{% url 'home' %}" style="text-decoration: none;">&larr; Back to Dashboard</a>
+        
+        <h1>{{ post.title }}</h1>
+        <p style="color: #666;">
+            <strong>{{ post.get_platform_display }}</strong> | {{ post.get_status_display }}
+            {% if post.scheduled_date %} | {{ post.scheduled_date }}{% endif %}
+            
+            <!-- Link to Edit Page -->
+            <a href="{% url 'post_edit' post.slug %}" style="margin-left: 15px; color: blue;">Edit Post</a>
+        </p>
+        
+        <hr>
+        
+        <div style="font-size: 1.1em; line-height: 1.6;">
+            {{ post.content|linebreaks }}
+        </div>
+    </div>
+</body>
+</html>

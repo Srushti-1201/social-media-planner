@@ -1,0 +1,38 @@
+<h2>Edit Post</h2>
+
+<form method="post">
+  {% csrf_token %}
+  
+  <div>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" value="{{ post.title }}" required>
+  </div>
+
+  <div>
+    <label for="platform">Platform:</label>
+    <select id="platform" name="platform">
+      <option value="instagram" {% if post.platform == 'instagram' %}selected{% endif %}>Instagram</option>
+      <option value="facebook" {% if post.platform == 'facebook' %}selected{% endif %}>Facebook</option>
+      <option value="linkedin" {% if post.platform == 'linkedin' %}selected{% endif %}>LinkedIn</option>
+      <option value="twitter" {% if post.platform == 'twitter' %}selected{% endif %}>Twitter</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="content">Content:</label>
+    <textarea id="content" name="content" rows="5" required>{{ post.content }}</textarea>
+  </div>
+
+  <div>
+    <label for="status">Status:</label>
+    <select id="status" name="status">
+      <option value="draft" {% if post.status == 'draft' %}selected{% endif %}>Draft</option>
+      <option value="scheduled" {% if post.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+      <option value="published" {% if post.status == 'published' %}selected{% endif %}>Published</option>
+    </select>
+  </div>
+
+  <br>
+  <button type="submit">Update Post</button>
+  <a href="{% url 'home' %}">Cancel</a>
+</form>

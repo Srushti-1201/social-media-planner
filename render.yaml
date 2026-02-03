@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: srushti
+    env: python
+    buildCommand: |
+      npm install --prefix frontend
+      npm run build --prefix frontend
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn content_planner.wsgi:application
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: srushti-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: UNSPLASH_ACCESS_KEY
+        value: # Add your Unsplash access key here
+
+databases:
+  - name: srushti-db
+    databaseName: srushti
+    user: srushti
+    plan: free

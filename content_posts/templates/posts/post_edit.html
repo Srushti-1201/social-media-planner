@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Post</title>
+</head>
+<body>
+    <div style="max-width: 600px; margin: 20px auto; font-family: sans-serif;">
+        <a href="{% url 'home' %}">&larr; Back to Dashboard</a>
+        <h2>Edit Post</h2>
+        
+        <form id="editForm">
+            {% csrf_token %}
+            <div style="margin-bottom: 10px;">
+                <label>Title:</label><br>
+                <input type="text" id="title" value="{{ post.title }}" style="width: 100%; padding: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <label>Content:</label><br>
+                <textarea id="content" rows="5" style="width: 100%; padding: 8px;">{{ post.content }}</textarea>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label>Status:</label><br>
+                <select id="status" style="padding: 8px;">
+                    <option value="draft" {% if post.status == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="scheduled" {% if post.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                    <option value="published" {% if post.status == 'published' %}selected{% endif %}>Published</option>
+                </select>
+            </div>
+
+            <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer;">Update Post</button>
+        </form>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        document.getElementById('editForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('msg');
+            msg.textContent = "Updating...";
+
+            const data = {
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                status: document.getElementById('status').value
+            };
+
+            try {
+                const response = await fetch('/api/posts/{{ post.id }}/', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    window.location.href = "{% url 'post_detail' post.slug %}";
+                } else {
+                    msg.textContent = "Error updating post.";
+                }
+            } catch (err) {
+                console.error(err);
+                msg.textContent = "Network error.";
+            }
+        });
+    </script>
+</body>
+</html>

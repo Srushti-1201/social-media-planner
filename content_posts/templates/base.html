@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Social Media Content Planner</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; }
+        .navbar {
+            background: #1976d2;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .navbar a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div>Social Media Content Planner</div>
+    <div>
+        <a href="/">Posts</a>
+        <a href="/create/">Create Post</a>
+        <a href="/dashboard/">Dashboard</a>
+    </div>
+</div>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

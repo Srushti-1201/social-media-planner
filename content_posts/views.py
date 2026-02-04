@@ -177,7 +177,19 @@ def health(request):
     return JsonResponse({"status": "ok"})
 
 def post_list(request):
-    return JsonResponse({"message": "API is working 🚀"})
+    """
+    Renders the main posts page with a list of all posts.
+    """
+    posts = Post.objects.all().order_by('-created_at')
+    return render(request, "content_posts/post_list.html", {"posts": posts})
 
 def dashboard(request):
-    return render(request, "dashboard.html")
+    """
+    Renders the dashboard page with post statistics.
+    """
+    context = {
+        "total_posts": Post.objects.count(),
+        "draft_count": Post.objects.filter(status="Draft").count(),
+        "published_count": Post.objects.filter(status="Published").count(),
+    }
+    return render(request, "dashboard.html", context)

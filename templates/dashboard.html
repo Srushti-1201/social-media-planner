@@ -1,12 +1,9 @@
-<h1>Social Media Content Planner – Dashboard</h1>
+{% extends "base.html" %}
 
-<p><strong>Total Posts:</strong> {{ total }}</p>
-<p><strong>Draft:</strong> {{ draft }}</p>
-<p><strong>Published:</strong> {{ published }}</p>
+{% block content %}
+<h1>Dashboard</h1>
 
-<h3>Posts by Platform</h3>
-<ul>
-  {% for item in by_platform %}
-    <li>{{ item.platform }}: {{ item.count }}</li>
-  {% endfor %}
-</ul>
+<p>Total Posts: {{ total_posts }}</p>
+<p>Draft: {{ draft_count }}</p>
+<p>Published: {{ published_count }}</p>
+{% endblock %}

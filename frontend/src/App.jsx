@@ -1,19 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PostList from "./pages/PostList";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+
+// Assuming your page components are moved to a `src/pages` directory
+import PostsList from "./pages/PostList";
 import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
-import Reports from "./pages/Reports";
+import Dashboard from "./pages/Dashboard";
+import ThirdParty from "./pages/ThirdParty";
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<PostList />} />
+        <Route path="/" element={<PostsList />} />
         <Route path="/create" element={<CreatePost />} />
         <Route path="/edit/:id" element={<EditPost />} />
-        <Route path="/reports" element={<Reports />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/external" element={<ThirdParty />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 

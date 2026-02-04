@@ -192,4 +192,4 @@ def dashboard(request):
         "draft_count": Post.objects.filter(status="Draft").count(),
         "published_count": Post.objects.filter(status="Published").count(),
     }
-    return render(request, "dashboard.html", context)
+    return render(request, "content_posts/dashboard.html", context)

@@ -85,7 +85,7 @@ git status
 | **Root Directory** | `backend` | ✅ CRITICAL |
 | **Runtime** | `Python 3` | ✅ |
 | **Build Command** | `pip install -r requirements.txt && python manage.py collectstatic --noinput` | ✅ |
-| **Start Command** | `gunicorn config.wsgi:application` | ✅ |
+| **Start Command** | `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT` | ✅ |
 
 ### 🔍 Project Structure Verification:
 
@@ -118,7 +118,7 @@ git push origin main
 
 ### ✅ Verified Configuration:
 
-1. **WSGI Path:** `config.wsgi:application` ✅
+1. **WSGI Path:** `config.wsgi:application --bind 0.0.0.0:$PORT` ✅
    - File exists at: `backend/config/wsgi.py`
    - Correct module path confirmed
 
@@ -262,7 +262,7 @@ Visit: `https://your-app.onrender.com/admin/`
 ### During Deploy:
 - [ ] Root Directory = `backend`
 - [ ] Build Command = `pip install -r requirements.txt && python manage.py collectstatic --noinput`
-- [ ] Start Command = `gunicorn config.wsgi:application`
+- [ ] Start Command = `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
 - [ ] Environment variables set (SECRET_KEY, DEBUG, DATABASE_URL)
 
 ### After Deploy:

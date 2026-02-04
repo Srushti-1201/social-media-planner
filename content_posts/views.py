@@ -4,15 +4,27 @@ from .models import SocialPost
 from .serializers import SocialPostSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Count, Avg, Sum
+from django.db.models import Count, Avg, Sum, Q
 import requests
 from decouple import config
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .logger import setup_logger
 from django.shortcuts import render
+from .models import SocialPost as Post
 
 logger = setup_logger()
+
+@api_view(['GET'])
+def post_stats(request):
+    stats = {
+        "draft": Post.objects.filter(status="Draft").count(),
+        "published": Post.objects.filter(status="Published").count(),
+        "instagram": Post.objects.filter(platform="instagram").count(),
+        "twitter": Post.objects.filter(platform="twitter").count(),
+        "facebook": Post.objects.filter(platform="facebook").count(),
+    }
+    return Response(stats)
 
 class PostViewSet(ModelViewSet):
     queryset = SocialPost.objects.all().order_by("-created_at")
@@ -51,7 +63,7 @@ class PostAnalyticsView(APIView):
         status_stats = SocialPost.objects.values('status').annotate(count=Count('id'))
         engagement_stats = SocialPost.objects.values('platform').annotate(avg_engagement=Avg('engagement_score'))
         total_posts = SocialPost.objects.count()
-        total_engagement = SocialPost.objects.aggregate(total_engagement=Sum('engagement_score'))['total_engagement']
+        total_engagement = SocialPost.objects.aggregate(total_engagement=Sum('engagement_score'))['total_engagement'] or 0
 
         return Response({
             'platform_stats': platform_stats,
@@ -60,6 +72,19 @@ class PostAnalyticsView(APIView):
             'total_posts': total_posts,
             'total_engagement': total_engagement,
         })
+
+class PostStatsView(APIView):
+    def get(self, request, *args, **kwargs):
+        stats = SocialPost.objects.aggregate(
+            draft=Count('id', filter=Q(status='Draft')),
+            published=Count('id', filter=Q(status='Published')),
+            scheduled=Count('id', filter=Q(status='Scheduled')),
+            instagram=Count('id', filter=Q(platform='instagram')),
+            twitter=Count('id', filter=Q(platform='twitter')),
+            facebook=Count('id', filter=Q(platform='facebook')),
+            linkedin=Count('id', filter=Q(platform='linkedin')),
+        )
+        return Response(stats)
 
 class FetchImageView(APIView):
     def get(self, request, *args, **kwargs):
@@ -126,6 +151,14 @@ def post_list_create(request):
         posts = SocialPost.objects.all().order_by('-created_at')
         serializer = SocialPostSerializer(posts, many=True)
         return Response(serializer.data)
+
+from django.http import JsonResponse
+
+def health(request):
+    return JsonResponse({"status": "ok"})
+
+def post_list(request):
+    return JsonResponse({"message": "API is working 🚀"})
 
 def dashboard(request):
     return render(request, "dashboard.html")

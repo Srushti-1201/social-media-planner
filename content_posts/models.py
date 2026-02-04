@@ -2,10 +2,10 @@ from django.db import models
 
 class SocialPost(models.Model):
     PLATFORM_CHOICES = [
-        ('Instagram', 'Instagram'),
-        ('Facebook', 'Facebook'),
-        ('Twitter', 'Twitter'),
-        ('LinkedIn', 'LinkedIn'),
+        ('instagram', 'Instagram'),
+        ('facebook', 'Facebook'),
+        ('twitter', 'Twitter'),
+        ('linkedin', 'LinkedIn'),
     ]
     
     STATUS_CHOICES = [

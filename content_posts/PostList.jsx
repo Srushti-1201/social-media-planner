@@ -4,13 +4,17 @@ import { Link } from "react-router-dom";
 
 export default function PostList() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const loadPosts = async () => {
     try {
+      setLoading(true);
       const res = await getPosts();
       setPosts(res.data);
     } catch (err) {
       console.error("Failed to load posts", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,6 +38,10 @@ export default function PostList() {
       </div>
 
       <div className="grid gap-4">
+        {loading && <p>Loading posts...</p>}
+        {!loading && posts.length === 0 && (
+          <p>No posts yet. Create your first post 🚀</p>
+        )}
         {posts.map((post) => (
           <div key={post.id} className="border p-4 rounded shadow-sm bg-white">
             <div className="flex justify-between items-start">
@@ -56,7 +64,6 @@ export default function PostList() {
             </div>
           </div>
         ))}
-        {posts.length === 0 && <p className="text-gray-500">No posts yet.</p>}
       </div>
     </div>
   );

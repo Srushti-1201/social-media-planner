@@ -13,5 +13,5 @@ export default defineConfig({
       input: './index.html',
     },
   },
-  base: '/static/',
+  base: '/',
 })

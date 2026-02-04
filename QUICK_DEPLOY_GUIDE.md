@@ -50,7 +50,7 @@ git push origin main
 |---------|-------|
 | **Root Directory** | `backend` |
 | **Build Command** | `pip install -r requirements.txt && python manage.py collectstatic --noinput` |
-| **Start Command** | `gunicorn config.wsgi:application` |
+| **Start Command** | `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT` |
 
 ⚠️ **Root Directory MUST be `backend`** - This is the most common mistake!
 
@@ -185,7 +185,7 @@ Render will:
 1. Navigate to `backend/` directory
 2. Run: `pip install -r requirements.txt`
 3. Run: `python manage.py collectstatic --noinput`
-4. Start: `gunicorn config.wsgi:application`
+4. Start: `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
 
 ---
 
@@ -197,7 +197,7 @@ Render will:
 ### Error: "No module named 'config'"
 **Fix:** 
 - Verify Root Directory = `backend`
-- Verify Start Command = `gunicorn config.wsgi:application`
+- Verify Start Command = `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
 
 ### Error: "collectstatic failed"
 **Fix:** Already configured in settings.py ✅
@@ -219,7 +219,7 @@ Before clicking "Create Web Service":
 
 - [ ] Root Directory = `backend`
 - [ ] Build Command = `pip install -r requirements.txt && python manage.py collectstatic --noinput`
-- [ ] Start Command = `gunicorn config.wsgi:application`
+- [ ] Start Command = `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
 - [ ] SECRET_KEY environment variable set
 - [ ] DEBUG = False (exactly, no quotes)
 - [ ] PostgreSQL database created

@@ -19,6 +19,17 @@ services:
           name: srushti-db
           property: connectionString
 
+  - type: web
+    name: srushti-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /
+        destination: /index.html
+
 databases:
   - name: srushti-db
     databaseName: srushti

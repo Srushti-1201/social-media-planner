@@ -19,7 +19,7 @@ startCommand: "gunicorn content_planner.wsgi:application"
 **After (CORRECT):**
 ```yaml
 rootDir: backend
-startCommand: "gunicorn config.wsgi:application"
+startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
 ```
 
 ### Why These Changes Fix the Issue:

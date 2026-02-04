@@ -3,7 +3,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import Navbar from './components/Navbar';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
-import Dashboard from './components/Dashboard';
+import Dashboard from './pages/Dashboard';
 
 const theme = createTheme({
   palette: {

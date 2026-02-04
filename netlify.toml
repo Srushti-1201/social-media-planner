@@ -1,0 +1,6 @@
+# This rule redirects all paths to the root index.html,
+# allowing React Router to handle routing.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
